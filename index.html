@@ -41,7 +41,653 @@
      This box is empty on purpose. In Part 7 you paste an interactive
      graphic BETWEEN the opening <div> and the closing </div> below.
      ===================================================================== -->
-<div class="showcase"></div>
+<div class="<!-- HTML: Builds the wood-trimmed header, interactive green meadow stage, and pop-up dog memory card -->
+<div class="sc-wrap">
+  <div class="sc-header">
+    <div class="sc-title">The Goodest Pack</div>
+    <div class="sc-subtitle">Tap a tag for a memory • Tap the grass to toss a ball</div>
+  </div>
+
+  <div class="sc-meadow" id="scMeadow">
+    <div class="sc-grass-hint" id="scHint">Click any floating dog tag to read their story</div>
+  </div>
+
+  <div class="sc-modal-backdrop" id="scBackdrop" aria-hidden="true">
+    <div class="sc-card" role="dialog" aria-labelledby="scCardName">
+      <div class="sc-card-top">
+        <span class="sc-card-era" id="scCardEra">2012 – 2024</span>
+        <button type="button" class="sc-close-btn" id="scCloseBtn" aria-label="Close memory">×</button>
+      </div>
+      <div class="sc-card-body">
+        <div class="sc-portrait" id="scPortrait"></div>
+        <div class="sc-card-name" id="scCardName">Dog Name</div>
+        <div class="sc-card-role" id="scCardRole">Favorite Title</div>
+        <div class="sc-card-story" id="scCardStory">Memory text goes here.</div>
+      </div>
+      <div class="sc-card-actions">
+        <button type="button" class="sc-nav-btn" id="scPrevBtn" aria-label="Previous dog">← Prev</button>
+        <button type="button" class="sc-scritch-btn" id="scScritchBtn">
+          ❤ Give Scritches (<span id="scScritchCount">0</span>)
+        </button>
+        <button type="button" class="sc-nav-btn" id="scNextBtn" aria-label="Next dog">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CSS: Styles the showcase container, floating brass-rimmed dog tags, tennis ball, and keepsake card -->
+<style>
+  .showcase {
+    position: relative;
+    width: 100%;
+    height: 460px;
+    max-height: 460px;
+    background-color: #2b8c5c;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 45%),
+      radial-gradient(circle at 80% 75%, rgba(16, 64, 40, 0.28) 0%, transparent 55%);
+    border: 3px solid #6f4020;
+    border-radius: 14px;
+    overflow: hidden;
+    box-sizing: border-box;
+    font-family: Georgia, "Times New Roman", serif;
+    color: #fdfaf3;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .showcase *,
+  .showcase *::before,
+  .showcase *::after {
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+
+  .showcase .sc-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .showcase .sc-header {
+    background-color: #6f4020;
+    border-bottom: 2px solid #4e2b14;
+    padding: 10px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 12px;
+    z-index: 4;
+    flex-shrink: 0;
+  }
+
+  .showcase .sc-title {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    color: #fdfaf3;
+  }
+
+  .showcase .sc-subtitle {
+    font-size: 12px;
+    font-style: italic;
+    color: #f1dec9;
+  }
+
+  .showcase .sc-meadow {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .showcase .sc-grass-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(111, 64, 32, 0.85);
+    color: #fdfaf3;
+    font-size: 11.5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    pointer-events: none;
+    border: 1px solid rgba(253, 250, 243, 0.25);
+    z-index: 2;
+  }
+
+  .showcase .sc-tag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fdfaf3;
+    color: #2c180b;
+    border: 2.5px solid #6f4020;
+    border-radius: 999px;
+    padding: 6px 13px 6px 8px;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(17, 56, 36, 0.35);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+    z-index: 3;
+    touch-action: manipulation;
+  }
+
+  .showcase .sc-tag:hover,
+  .showcase .sc-tag:focus-visible {
+    background: #fff6e5;
+    box-shadow: 0 8px 18px rgba(17, 56, 36, 0.48);
+    outline: none;
+    z-index: 5;
+  }
+
+  .showcase .sc-tag-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #6f4020;
+    color: #fdfaf3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .showcase .sc-tag-info {
+    text-align: left;
+    line-height: 1.15;
+  }
+
+  .showcase .sc-tag-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #6f4020;
+  }
+
+  .showcase .sc-tag-years {
+    font-size: 10.5px;
+    color: #5d4738;
+  }
+
+  .showcase .sc-ball {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #e4f564, #b7cc28);
+    border: 2px solid #6f4020;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.28);
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.35s ease, transform 0.2s ease;
+  }
+
+  .showcase .sc-ripple {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(253, 250, 243, 0.75);
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: none;
+    z-index: 1;
+    transition: transform 0.55s ease-out, opacity 0.55s ease-out;
+  }
+
+  .showcase .sc-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 56, 38, 0.68);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    z-index: 10;
+  }
+
+  .showcase .sc-modal-backdrop.sc-open {
+    display: flex;
+  }
+
+  .showcase .sc-card {
+    width: 100%;
+    max-width: 380px;
+    background: #fdfaf3;
+    color: #2c180b;
+    border: 3px solid #6f4020;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+  }
+
+  .showcase .sc-card-top {
+    background: #6f4020;
+    color: #fdfaf3;
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .showcase .sc-card-era {
+    font-size: 12px;
+    font-style: italic;
+    color: #f1dec9;
+  }
+
+  .showcase .sc-close-btn {
+    background: transparent;
+    border: 1px solid rgba(253, 250, 243, 0.45);
+    color: #fdfaf3;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .showcase .sc-close-btn:hover {
+    background: rgba(253, 250, 243, 0.18);
+  }
+
+  .showcase .sc-card-body {
+    padding: 14px 16px 10px;
+    text-align: center;
+    position: relative;
+  }
+
+  .showcase .sc-portrait {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    background: #2b8c5c;
+    border: 2.5px solid #6f4020;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fdfaf3;
+    transition: transform 0.18s ease;
+  }
+
+  .showcase .sc-portrait.sc-wag {
+    transform: rotate(-10deg) scale(1.1);
+  }
+
+  .showcase .sc-card-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #6f4020;
+    margin-bottom: 2px;
+  }
+
+  .showcase .sc-card-role {
+    font-size: 12px;
+    font-style: italic;
+    color: #2b8c5c;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .showcase .sc-card-story {
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: #362214;
+    background: #f5ede0;
+    border-left: 3px solid #6f4020;
+    padding: 8px 10px;
+    border-radius: 4px;
+    text-align: left;
+  }
+
+  .showcase .sc-card-actions {
+    padding: 8px 12px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .showcase .sc-nav-btn,
+  .showcase .sc-scritch-btn {
+    border: 1.5px solid #6f4020;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+  }
+
+  .showcase .sc-nav-btn {
+    background: #f5ede0;
+    color: #6f4020;
+    font-weight: bold;
+  }
+
+  .showcase .sc-nav-btn:hover {
+    background: #eadbc5;
+  }
+
+  .showcase .sc-scritch-btn {
+    background: #2b8c5c;
+    color: #fdfaf3;
+    border-color: #1f6b45;
+    font-weight: bold;
+    flex: 1;
+  }
+
+  .showcase .sc-scritch-btn:hover {
+    background: #23754c;
+  }
+
+  .showcase .sc-scritch-btn:active {
+    transform: scale(0.96);
+  }
+
+  .showcase .sc-heart {
+    position: absolute;
+    color: #6f4020;
+    font-size: 15px;
+    pointer-events: none;
+    transition: transform 0.7s ease-out, opacity 0.7s ease-out;
+  }
+
+  @media (max-width: 480px) {
+    .showcase .sc-title {
+      font-size: 16px;
+    }
+    .showcase .sc-subtitle {
+      font-size: 11px;
+    }
+    .showcase .sc-tag {
+      padding: 5px 10px 5px 6px;
+      gap: 6px;
+    }
+    .showcase .sc-tag-badge {
+      width: 28px;
+      height: 28px;
+    }
+    .showcase .sc-tag-name {
+      font-size: 13px;
+    }
+  }
+</style>
+
+<!-- JavaScript: Animates the floating dog tags, handles tennis-ball tosses, and populates each dog's story card -->
+<script>
+  (function () {
+    // Customize your dogs right here:
+    var DOGS = [
+      {
+        name: "Barnaby",
+        years: "2004 – 2016",
+        role: "The Childhood Best Friend",
+        story: "Waited by the front window every afternoon at 3:15 PM sharp and never met a puddle he didn't want to splash through.",
+        icon: "floppy",
+        scritches: 14
+      },
+      {
+        name: "Clover",
+        years: "2011 – 2022",
+        role: "Chief Tennis Ball Inspector",
+        story: "Insisted on carrying two tennis balls in her mouth at once and greeting every guest at the door with a full-body wiggle.",
+        icon: "pointy",
+        scritches: 21
+      },
+      {
+        name: "Biscuit",
+        years: "2016 – Present",
+        role: "Belly-Rub Connoisseur",
+        story: "Sleeps upside-down in the middle of the hallway with his favorite plush alligator tucked right under his chin.",
+        icon: "fluffy",
+        scritches: 18
+      },
+      {
+        name: "Scout",
+        years: "2019 – Present",
+        role: "Backyard Patrol Captain",
+        story: "Keeps a close eye on every squirrel in the neighborhood and believes every crinkle of a snack bag is meant for him.",
+        icon: "paw",
+        scritches: 12
+      }
+    ];
+
+    var ICONS = {
+      floppy: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9c-2.5 0-4 2-4 4.5S4.5 17 6 16"/><path d="M17 9c2.5 0 4 2 4 4.5S19.5 17 18 16"/><circle cx="12" cy="12" r="6"/><circle cx="10" cy="11" r="0.8" fill="currentColor"/><circle cx="14" cy="11" r="0.8" fill="currentColor"/><path d="M10.5 14.5c1 1 2 1 3 0"/></svg>',
+      pointy: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11L4.5 4.5 10 8"/><path d="M18 11l1.5-6.5L14 8"/><circle cx="12" cy="13" r="6"/><circle cx="10" cy="12" r="0.8" fill="currentColor"/><circle cx="14" cy="12" r="0.8" fill="currentColor"/><path d="M11 15h2"/></svg>',
+      fluffy: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c4 0 7 2.8 7 7s-3 7-7 7-7-2.8-7-7 3-7 7-7z"/><path d="M5 10c-1.5 1-2 3-1 4.5"/><path d="M19 10c1.5 1 2 3 1 4.5"/><circle cx="10" cy="11.5" r="0.8" fill="currentColor"/><circle cx="14" cy="11.5" r="0.8" fill="currentColor"/><path d="M10.5 14.5q1.5 1.5 3 0"/></svg>',
+      paw: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="9.5" r="1.6"/><circle cx="10" cy="6.5" r="1.6"/><circle cx="14" cy="6.5" r="1.6"/><circle cx="17.5" cy="9.5" r="1.6"/><path d="M12 12c-3 0-5.5 2.2-5.5 4.5 0 1.4 1.2 2.5 2.7 2.5 1.1 0 1.8-.5 2.8-.5s1.7.5 2.8.5c1.5 0 2.7-1.1 2.7-2.5 0-2.3-2.5-4.5-5.5-4.5z"/></svg>'
+    };
+
+    var meadow = document.getElementById("scMeadow");
+    var backdrop = document.getElementById("scBackdrop");
+    var closeBtn = document.getElementById("scCloseBtn");
+    var prevBtn = document.getElementById("scPrevBtn");
+    var nextBtn = document.getElementById("scNextBtn");
+    var scritchBtn = document.getElementById("scScritchBtn");
+    var scritchCount = document.getElementById("scScritchCount");
+    var portraitEl = document.getElementById("scPortrait");
+    var cardNameEl = document.getElementById("scCardName");
+    var cardEraEl = document.getElementById("scCardEra");
+    var cardRoleEl = document.getElementById("scCardRole");
+    var cardStoryEl = document.getElementById("scCardStory");
+
+    if (!meadow) return;
+
+    var activeIndex = 0;
+    var items = [];
+    var ballTarget = null;
+    var ballEl = null;
+    var ballTimer = null;
+
+    // Create floating dog tags
+    DOGS.forEach(function (dog, idx) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "sc-tag";
+      btn.setAttribute("aria-label", "Open memory for " + dog.name);
+      btn.innerHTML =
+        '<span class="sc-tag-badge">' + (ICONS[dog.icon] || ICONS.paw) + "</span>" +
+        '<span class="sc-tag-info">' +
+          '<div class="sc-tag-name">' + dog.name + "</div>" +
+          '<div class="sc-tag-years">' + dog.years + "</div>" +
+        "</span>";
+
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        openCard(idx);
+      });
+
+      meadow.appendChild(btn);
+
+      var angle = (idx / DOGS.length) * Math.PI * 2 + 0.4;
+      var speed = 0.42 + (idx % 3) * 0.12;
+      items.push({
+        el: btn,
+        x: 30 + ((idx * 97) % 180),
+        y: 35 + ((idx * 73) % 190),
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed
+      });
+    });
+
+    function openCard(idx) {
+      activeIndex = (idx + DOGS.length) % DOGS.length;
+      var dog = DOGS[activeIndex];
+      cardNameEl.textContent = dog.name;
+      cardEraEl.textContent = dog.years;
+      cardRoleEl.textContent = dog.role;
+      cardStoryEl.textContent = dog.story;
+      scritchCount.textContent = dog.scritches;
+      portraitEl.innerHTML = (ICONS[dog.icon] || ICONS.paw).replace('width="20" height="20"', 'width="32" height="32"');
+      backdrop.classList.add("sc-open");
+      backdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function closeCard() {
+      backdrop.classList.remove("sc-open");
+      backdrop.setAttribute("aria-hidden", "true");
+    }
+
+    closeBtn.addEventListener("click", closeCard);
+    backdrop.addEventListener("click", function (e) {
+      if (e.target === backdrop) closeCard();
+    });
+    prevBtn.addEventListener("click", function () {
+      openCard(activeIndex - 1);
+    });
+    nextBtn.addEventListener("click", function () {
+      openCard(activeIndex + 1);
+    });
+
+    scritchBtn.addEventListener("click", function () {
+      var dog = DOGS[activeIndex];
+      dog.scritches += 1;
+      scritchCount.textContent = dog.scritches;
+
+      portraitEl.classList.remove("sc-wag");
+      void portraitEl.offsetWidth;
+      portraitEl.classList.add("sc-wag");
+      setTimeout(function () {
+        portraitEl.classList.remove("sc-wag");
+      }, 220);
+
+      var heart = document.createElement("span");
+      heart.className = "sc-heart";
+      heart.innerHTML = "❤";
+      heart.style.left = (42 + Math.random() * 16) + "%";
+      heart.style.top = "36px";
+      portraitEl.parentNode.appendChild(heart);
+
+      requestAnimationFrame(function () {
+        heart.style.transform = "translateY(-28px) scale(1.25)";
+        heart.style.opacity = "0";
+      });
+      setTimeout(function () {
+        if (heart.parentNode) heart.parentNode.removeChild(heart);
+      }, 720);
+    });
+
+    // Toss a tennis ball when clicking empty meadow grass
+    meadow.addEventListener("click", function (e) {
+      var rect = meadow.getBoundingClientRect();
+      var tx = e.clientX - rect.left;
+      var ty = e.clientY - rect.top;
+
+      var ripple = document.createElement("div");
+      ripple.className = "sc-ripple";
+      ripple.style.left = tx + "px";
+      ripple.style.top = ty + "px";
+      meadow.appendChild(ripple);
+      requestAnimationFrame(function () {
+        ripple.style.transform = "translate(-50%, -50%) scale(3.2)";
+        ripple.style.opacity = "0";
+      });
+      setTimeout(function () {
+        if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+      }, 580);
+
+      if (ballEl && ballEl.parentNode) ballEl.parentNode.removeChild(ballEl);
+      if (ballTimer) clearTimeout(ballTimer);
+
+      ballEl = document.createElement("div");
+      ballEl.className = "sc-ball";
+      ballEl.style.left = tx + "px";
+      ballEl.style.top = ty + "px";
+      meadow.appendChild(ballEl);
+      ballTarget = { x: tx, y: ty };
+
+      // Gently nudge tags toward the tennis ball
+      items.forEach(function (item) {
+        var dx = tx - (item.x + 50);
+        var dy = ty - (item.y + 20);
+        var dist = Math.hypot(dx, dy) || 1;
+        item.vx = (dx / dist) * 1.15;
+        item.vy = (dy / dist) * 1.15;
+      });
+
+      ballTimer = setTimeout(function () {
+        ballTarget = null;
+        if (ballEl) {
+          ballEl.style.opacity = "0";
+          setTimeout(function () {
+            if (ballEl && ballEl.parentNode) ballEl.parentNode.removeChild(ballEl);
+          }, 360);
+        }
+      }, 2400);
+    });
+
+    // Smooth animation loop inside the meadow bounds
+    function step() {
+      var bounds = meadow.getBoundingClientRect();
+      var pad = 10;
+      var bottomReserved = 36;
+
+      if (!backdrop.classList.contains("sc-open") && bounds.width > 0 && bounds.height > 0) {
+        for (var i = 0; i < items.length; i++) {
+          var a = items[i];
+          var aw = a.el.offsetWidth || 120;
+          var ah = a.el.offsetHeight || 44;
+
+          // Gradually settle speed back to a calm float
+          var speed = Math.hypot(a.vx, a.vy);
+          if (speed > 0.65) {
+            a.vx *= 0.985;
+            a.vy *= 0.985;
+          } else if (speed < 0.35) {
+            a.vx *= 1.01;
+            a.vy *= 1.01;
+          }
+
+          a.x += a.vx;
+          a.y += a.vy;
+
+          var maxX = Math.max(pad, bounds.width - aw - pad);
+          var maxY = Math.max(pad, bounds.height - ah - bottomReserved);
+
+          if (a.x <= pad) { a.x = pad; a.vx = Math.abs(a.vx); }
+          if (a.x >= maxX) { a.x = maxX; a.vx = -Math.abs(a.vx); }
+          if (a.y <= pad) { a.y = pad; a.vy = Math.abs(a.vy); }
+          if (a.y >= maxY) { a.y = maxY; a.vy = -Math.abs(a.vy); }
+
+          // Soft separation so tags don't stack on top of each other
+          for (var j = i + 1; j < items.length; j++) {
+            var b = items[j];
+            var dx = (a.x - b.x);
+            var dy = (a.y - b.y);
+            var dist = Math.hypot(dx, dy);
+            if (dist > 0 && dist < 74) {
+              var push = (74 - dist) * 0.004;
+              a.vx += (dx / dist) * push;
+              a.vy += (dy / dist) * push;
+              b.vx -= (dx / dist) * push;
+              b.vy -= (dy / dist) * push;
+            }
+          }
+
+          a.el.style.transform = "translate3d(" + a.x.toFixed(1) + "px," + a.y.toFixed(1) + "px,0)";
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+  })();
+</script>"></div>
 
 <!-- Footer: fill in your name -->
 <footer>Built by YOUR NAME &middot; BMIS 235</footer>
